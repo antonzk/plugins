@@ -360,7 +360,7 @@ class MethodChannelGoogleMapsFlutter extends GoogleMapsFlutterPlatform {
     required int mapId,
     Duration? animationDuration,
   }) {
-    return channel(mapId).invokeMethod<void>('camera#animate', <String, Object>{
+    return channel(mapId).invokeMethod<void>('camera#animate', <String, dynamic>{
       'cameraUpdate': cameraUpdate.toJson(),
       'animationDuration': animationDuration?.inMilliseconds,
     });
