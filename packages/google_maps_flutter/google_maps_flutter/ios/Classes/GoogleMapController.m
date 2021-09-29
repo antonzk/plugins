@@ -162,7 +162,12 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
     [self hide];
     result(nil);
   } else if ([call.method isEqualToString:@"camera#animate"]) {
-    [self animateWithCameraUpdate:ToCameraUpdate(call.arguments[@"cameraUpdate"])];
+    NSNumber* animationDuration = call.arguments[@"animationDuration"];
+    if (![animationDuration isKindOfClass:[NSNull class]]) {
+      animationDuration = @([animationDuration floatValue] / 1000);
+    }
+    [self animateWithCameraUpdate:ToCameraUpdate(call.arguments[@"cameraUpdate"])
+                animationDuration:animationDuration];
     result(nil);
   } else if ([call.method isEqualToString:@"camera#move"]) {
     [self moveWithCameraUpdate:ToCameraUpdate(call.arguments[@"cameraUpdate"])];
@@ -386,8 +391,14 @@ static double ToDouble(NSNumber* data) { return [FLTGoogleMapJsonConversions toD
   _mapView.hidden = YES;
 }
 
-- (void)animateWithCameraUpdate:(GMSCameraUpdate*)cameraUpdate {
+- (void)animateWithCameraUpdate:(GMSCameraUpdate*)cameraUpdate
+              animationDuration:(NSNumber*)duration {
+  [CATransaction begin];
+  if (![duration isKindOfClass:[NSNull class]]) {
+    [CATransaction setValue:duration forKey:kCATransactionAnimationDuration];
+  }
   [_mapView animateWithCameraUpdate:cameraUpdate];
+  [CATransaction commit];
 }
 
 - (void)moveWithCameraUpdate:(GMSCameraUpdate*)cameraUpdate {

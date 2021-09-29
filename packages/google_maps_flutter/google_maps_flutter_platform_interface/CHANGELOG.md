@@ -1,3 +1,7 @@
+## 2.1.3
+
+* Add duration for `animteCamera` method
+
 ## 2.1.2
 
 * Add additional marker drag events
